@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- angular animate -->
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+ 
+    <title>Debug page</title>
+    <style>
+	    table{
+	    	border-collapse: collapse;
+	    	width: 100%;
+	    }
+	    th{
+	    	font-weight: bold;
+	    	font-style: italic;
+	    	color: green;
+	    }
+	    th , td{
+	    	padding: 8px;
+	    	text-align: left;
+	    	border-bottom: 1px solid #ddd;
+	    	text-align: center;
+	    }
+    </style>
+</head>
+<body ng-app="rsai">
+	<div id="infoTable" ng-controller="debugController">
+		<button id="btn1" ng-click="click()">Test button</button>
+		<table>
+			<thead>
+				<th>name</th>
+				<th>value</th>
+				<th>unit</th>
+			</thead>
+			<tbody>
+				<tr ng-repeat="row in entries" >
+					<!-- <td>{{ $index + 1 }}</td> -->
+					<td ng-repeat="x in row">{{x}}</td>
+					<!-- <td > {{ row.name }}</td>
+					<td > {{ row.value }}</td>
+					<td > {{ row.unit }}</td> -->
+				</tr>
+
+			</tbody>
+		</table>
+		<h1 ng-repeat="a in some">{{a}}</h1>
+	</div>
+	<script src="debug.js"></script>
+</body>
+
+</html>

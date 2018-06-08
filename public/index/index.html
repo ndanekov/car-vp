@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- angular animate -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
+ 
+    <title>Config page</title>
+    <style>
+        #btnTemplate{
+            width: 800px;
+            height: 100px;
+            background: rgb(223,221,221);
+        }
+        buttnon{
+            margin: 1em 1em;
+            width: 25%;
+            height: 50%;
+        }
+    </style>
+</head>
+<body ng-controller="indexController" ng-app="rsai">
+    <script src="index.js"></script>
+	<h1>Configuration page</h1>
+	<div>
+        <button id="btn1" ng-click="incrementClick()">Test button</button>
+        <button id="btn2" ng-click="startAutoClick()" >start auto</button>
+        <button id="btn3" ng-click="stopAutoClick()">stop auto</button>
+    </div>
+</body>
