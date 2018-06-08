@@ -14,7 +14,7 @@ var events = require('events');
 var eventEmitter = new events.EventEmitter();
 
 
-var Value = require('./models/Value')
+var CarAttribute = require('./models/CarAttribute')
 var Cluster = require('./models/Cluster')
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -59,7 +59,7 @@ app.use(function(err, req, res, next) {
 });
 
 //add
-var tmp_arr = [new Value('speed',0,eventEmitter),new Value('temperature',0,eventEmitter),new Value('rpm',0,eventEmitter)]
+var tmp_arr = [new CarAttribute('speed',0,eventEmitter),new CarAttribute('temperature',0,eventEmitter),new CarAttribute('rpm',0,eventEmitter)]
 
 var val_arr = []
 tmp_arr.forEach(element =>{

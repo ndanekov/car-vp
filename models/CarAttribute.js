@@ -1,18 +1,18 @@
 var express = require('express');
 
 
-function Value(name,value,eventEmitter){
+function CarAttribute(name,value,eventEmitter){
 	this.name = name
 	this.value = value
 	this.eventEmitter = eventEmitter
 }
 
-Value.prototype.setValue = function(val){
+CarAttribute.prototype.setValue = function(val){
 		this.value = val
 		this.eventEmitter.emit("property_changed",this.name)
 }
 
-Value.prototype.getObjJSON = function(){
+CarAttribute.prototype.getObjJSON = function(){
 	return {
 		name:this.name,
 		value:this.value,
@@ -20,4 +20,4 @@ Value.prototype.getObjJSON = function(){
 	}
 }
 
-module.exports = Value;
+module.exports = CarAttribute;
