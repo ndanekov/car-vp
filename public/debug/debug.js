@@ -37,7 +37,7 @@ app.controller("debugController",['$scope',function($scope){
 			})
 			if(id=>0){
 				$scope.entries[id] = msg.data
-				$scope.$dligest()
+				$scope.$digest()
 			}else{
 				alert("an error occured!!")
 			}
@@ -49,7 +49,7 @@ app.controller("debugController",['$scope',function($scope){
 			})
 			if(id=>0){
 				$scope.entries[id] = msg.data
-				$scope.$dligest()
+				$scope.$digest()
 			}else{
 				alert("an error occured!!")
 			}

@@ -59,7 +59,7 @@ app.use(function(err, req, res, next) {
 });
 
 //add
-var tmp_arr = [new CarAttribute('speed',0,eventEmitter),new CarAttribute('temperature',0,eventEmitter),new CarAttribute('rpm',0,eventEmitter)]
+var tmp_arr = [new CarAttribute('speed',0,eventEmitter),new CarAttribute('temperature',70,eventEmitter),new CarAttribute('rpm',1000,eventEmitter)]
 
 var val_arr = []
 tmp_arr.forEach(element =>{
@@ -67,15 +67,89 @@ tmp_arr.forEach(element =>{
 })
 
 var cluster = new Cluster(val_arr)
-console.log(cluster.array[0].obj.getObjJSON())
+
+
 eventEmitter.on("property_changed",function(name){
 	console.log("default " + name + "changed");
 })
 
 
-var wss = new WebSocket.Server({port:8082});
+var rand_speed = 0
+var rand_temp = 0
+var rand_rpm = 0
 
-wss.on('connection', function (ws) {
+var getRandomValue = function(min,max){
+	min = Math.ceil(min);
+  	max = Math.floor(max);
+	return Math.floor(Math.random() * (max - min) + min);
+}
+
+start = function(){
+	
+	var obj = null;
+	//speed
+	cluster.array.forEach(element =>{
+		if(element.name == "speed"){
+			obj = element.obj;
+		}
+	})
+	if(obj.value == rand_speed){
+		rand_speed = getRandomValue(0,180)
+	}
+
+	if(obj.value > rand_speed){
+		obj.setValue(obj.value-1)
+	}else{
+		obj.setValue(obj.value+1)
+	}
+
+	//temperature
+	cluster.array.forEach(element =>{
+		if(element.name == "temperature"){
+			obj = element.obj;
+		}
+	})
+	if(obj.value == rand_temp){
+		rand_temp = getRandomValue(70,100)
+	}
+
+	if(obj.value > rand_temp){
+		obj.setValue(obj.value-1)
+	}else{
+		obj.setValue(obj.value+1)
+	}
+	
+	//rpm
+	cluster.array.forEach(element =>{
+		if(element.name == "rpm"){
+			obj = element.obj;
+		}
+	})
+	if(obj.value == rand_rpm){
+		rand_rpm = getRandomValue(0,600)*10
+	}
+
+	if(obj.value > rand_rpm){
+		obj.setValue(obj.value-10)
+	}else{
+		obj.setValue(obj.value+10)
+	}
+	
+	console.log("new speed is " + obj.value)
+}
+
+setup = function(){
+	rand_speed = getRandomValue(0,180)
+	rand_temp = getRandomValue(70,90)
+	rand_rpm = getRandomValue(0,600)*10
+}
+
+
+var wss_config = new WebSocket.Server({port:8082});
+
+
+
+wss_config.on('connection', function (ws) {
 	var id = -1;
 	ws.on('message', function (message) {
 		console.log('received: %s', message)
@@ -92,17 +166,8 @@ wss.on('connection', function (ws) {
 			console.log("incremented value is " + obj.value)
 		}
 		if(msg.action == "start_auto"){
-			id = setInterval(function(){
-				
-				var obj = null;
-				cluster.array.forEach(element =>{
-					if(element.name == "speed"){
-						obj = element.obj;
-					}
-				})
-				obj.setValue(obj.value+1)
-				console.log("incremented value is " + obj.value)
-			},1000)
+			setup()
+			id = setInterval(start,100)
 		}
 		if(msg.action == "stop_auto"){
 			clearInterval(id);
@@ -113,8 +178,8 @@ wss.on('connection', function (ws) {
 })
 
 
-var wss1 = new WebSocket.Server({port:8083});
-wss1.on('connection', function (ws) {
+var wss_debug = new WebSocket.Server({port:8083});
+wss_debug.on('connection', function (ws) {
 	console.log("connected to display port")
 	console.log("connected to ")
 	var clusterJSON = {
