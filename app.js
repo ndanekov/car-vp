@@ -31,14 +31,14 @@ app.use('/users', usersRouter);
 app.get('/', function(req, res) {
 	console.log(__dirname)
 	var index_path = path.join(__dirname, './public/index/index.html')
-
-  	res.sendfile(index_path);
+	console.log(index_path)
+  	res.sendFile(index_path);
 });
 app.get('/debug', function(req, res) {
 	console.log(__dirname)
 	var debug_path = path.join(__dirname, './public/debug/debug.html')
 
-  	res.sendfile(debug_path);
+  	res.sendFile(debug_path);
 });
 
 
@@ -144,13 +144,62 @@ setup = function(){
 	rand_rpm = getRandomValue(0,600)*10
 }
 
+realistic_simulation = function(){
+	var rpm_koef = 6000/30;
+	var obj = null;
+	//speed
+	cluster.array.forEach(element =>{
+		if(element.name == "speed"){
+			obj = element.obj;
+		}
+	})
+	if(obj.value == rand_speed){
+		rand_speed = getRandomValue(0,180)
+	}
+	var rpm = null;
+	//rpm
+	cluster.array.forEach(element =>{
+		if(element.name == "rpm"){
+			rpm = element.obj;
+		}
+	})
+	if(obj.value > rand_speed){
+		obj.setValue(obj.value-1)
+		rpm.setValue(rpm.value-rpm_koef)
+		if(rpm.value<=1000){
+			rpm.setValue(6000)
+		}
 
+	}else{
+		obj.setValue(obj.value+1)
+		rpm.setValue(rpm.value+rpm_koef)
+		if(rpm.value>=6000){
+			rpm.setValue(1000)
+		}
+	}
+
+	//temperature
+	cluster.array.forEach(element =>{
+		if(element.name == "temperature"){
+			obj = element.obj;
+		}
+	})
+	if(obj.value == rand_temp){
+		rand_temp = getRandomValue(70,100)
+	}
+
+	if(obj.value > rand_temp){
+		obj.setValue(obj.value-1)
+	}else{
+		obj.setValue(obj.value+1)
+	}
+}
 var wss_config = new WebSocket.Server({port:8082});
 
 
 
 wss_config.on('connection', function (ws) {
-	var id = -1;
+	var id = -1,id_real = -1;
 	ws.on('message', function (message) {
 		console.log('received: %s', message)
 		var msg = JSON.parse(message)
@@ -172,6 +221,15 @@ wss_config.on('connection', function (ws) {
 		if(msg.action == "stop_auto"){
 			clearInterval(id);
 		}
+
+		if(msg.action == "start_realistic"){
+			setup()
+			id_real = setInterval(realistic_simulation,100)
+		}
+		if(msg.action == "stop_realistic"){
+			clearInterval(id_real);
+		}
+		
 
 	})
 

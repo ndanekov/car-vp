@@ -1,6 +1,5 @@
-var app = angular.module('rsai', []);
+var app = angular.module('RSAI', []);
 app.controller("indexController",function($scope,$http){
-	alert("found");
 	var ws = new WebSocket('ws://localhost:8082');
 	    // event emmited when connected
     ws.onopen = function () {
@@ -14,16 +13,7 @@ app.controller("indexController",function($scope,$http){
 	ws.onmessage = function (ev) {
 	    console.log(ev);
 	}
-	var ws1 = new WebSocket('ws://localhost:8083');
-	    // event emmited when connected
-    ws1.onopen = function () {
-        console.log('websocket is connected ...')
-        // sending a send event to websocket server
-        //ws.send('connected')
-    }
-	ws1.onmessage = function (ev) {
-	    console.log(ev);
-	}
+	
 	$scope.incrementClick = function(){
 		var msg = {
 			action:"increment"
@@ -43,6 +33,23 @@ app.controller("indexController",function($scope,$http){
 
 		var msg = {
 			action:"stop_auto"
+		}
+ 
+	    ws.send(JSON.stringify(msg))
+	}
+
+	$scope.startRealClick = function(){
+		var msg = {
+			action:"start_realistic"
+		}
+ 
+	    ws.send(JSON.stringify(msg))
+	}
+
+	$scope.stopRealClick = function(){
+
+		var msg = {
+			action:"stop_realistic"
 		}
  
 	    ws.send(JSON.stringify(msg))
