@@ -70,7 +70,7 @@ var cluster = new Cluster(val_arr)
 
 
 eventEmitter.on("property_changed",function(name){
-	console.log("default " + name + "changed");
+	console.log(getTime() + " |> default " + name + "changed");
 })
 
 
@@ -135,7 +135,7 @@ start = function(){
 		obj.setValue(obj.value+10)
 	}
 	
-	console.log("new speed is " + obj.value)
+	console.log(getTime() + " |> new speed is " + obj.value)
 }
 
 setup = function(){
@@ -198,10 +198,12 @@ var wss_config = new WebSocket.Server({port:8082});
 
 
 
+
+
 wss_config.on('connection', function (ws) {
 	var id = -1,id_real = -1;
 	ws.on('message', function (message) {
-		console.log('received: %s', message)
+		console.log(getTime() + ' |> received: %s', message)
 		var msg = JSON.parse(message)
 		if(msg.action == "increment"){
 				
@@ -212,7 +214,7 @@ wss_config.on('connection', function (ws) {
 				}
 			})
 			obj.setValue(obj.value+15)
-			console.log("incremented value is " + obj.value)
+			console.log(getTime() + " |> incremented value is " + obj.value)
 		}
 		if(msg.action == "start_auto"){
 			setup()
@@ -238,8 +240,8 @@ wss_config.on('connection', function (ws) {
 
 var wss_debug = new WebSocket.Server({port:8083});
 wss_debug.on('connection', function (ws) {
-	console.log("connected to display port")
-	console.log("connected to ")
+	console.log(getTime() + " |> connected to display port")
+	console.log(getTime() + " |> connected to ")
 	var clusterJSON = {
 		action:"update_all",
 		data:cluster.getClusterJSON()
@@ -248,7 +250,7 @@ wss_debug.on('connection', function (ws) {
 
 	ws.send(JSON.stringify(clusterJSON))
 	eventEmitter.on("property_changed",function(name){
-		console.log("speed changed sending to second socket")
+		console.log(getTime() + " |> speed changed sending to second socket")
 		var obj = null;
 		cluster.array.forEach(element =>{
 			if(element.name == name){
@@ -260,11 +262,26 @@ wss_debug.on('connection', function (ws) {
 			data:obj.getObjJSON()
 		}
 		ws.send(JSON.stringify(speedJSON))
+		console.log("message sent")
 	})
 
 })
 
 
-
-
 module.exports = app;
+
+function addZero(x, n) {
+    while (x.toString().length < n) {
+        x = "0" + x;
+    }
+    return x;
+}
+
+function getTime() {
+    var d = new Date();
+    var h = addZero(d.getHours(), 2);
+    var m = addZero(d.getMinutes(), 2);
+    var s = addZero(d.getSeconds(), 2);
+    var ms = addZero(d.getMilliseconds(), 3);
+    return h + ":" + m + ":" + s + ":" + ms;
+}

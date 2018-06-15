@@ -15,16 +15,36 @@ app.controller("debugController",['$scope',function($scope){
 	    console.log(msg);
 	    if(msg.action=="update_all"){
 	    	console.log(msg.data)
+	    	
+			for (var i = 0; i < msg.data.length; i++)
+			{
+			    if (msg.data[i].name === "speed" && msg.data[i].value > 255)
+			    {
+			        alert("Provided speed value is out of range: " + msg.data[i].value + "!");
+			    }
+			    else if (msg.data[i].name === "temperature" && msg.data[i].value > 130)
+			    {
+			        alert("Provided temperature value is out of range: " + msg.data[i].value + "!");
+			    }
+				else if (msg.data[i].name === "rpm" && msg.data[i].value > 7000)
+			    {
+			        alert("Provided rpm value is out of range: " + msg.data[i].value + "!");
+			    }
+			}
+				    	
 	    	$scope.entries = msg.data
 	    	$scope.$digest()
-
-			
 		}
 		if(msg.action == "update_speed"){
 			var id = $scope.entries.findIndex(function(element){
 				return element.name == "speed";
 			})
 			if(id=>0){
+			    if (msg.data.value > 255)
+			    {
+			        alert("Provided speed value is out of range: " + msg.data.value + "!");
+			    }
+			
 				$scope.entries[id] = msg.data
 				$scope.$digest()
 			}else{
@@ -36,6 +56,11 @@ app.controller("debugController",['$scope',function($scope){
 				return element.name == "temperature";
 			})
 			if(id=>0){
+			    if (msg.data.value > 130)
+			    {
+			        alert("Provided temperature value is out of range: " + msg.data.value + "!");
+			    }
+
 				$scope.entries[id] = msg.data
 				$scope.$digest()
 			}else{
@@ -48,6 +73,11 @@ app.controller("debugController",['$scope',function($scope){
 				return element.name == "rpm";
 			})
 			if(id=>0){
+			    if (msg.data.value > 7000)
+			    {
+			        alert("Provided rpm value is out of range: " + msg.data.value + "!");
+			    }
+			
 				$scope.entries[id] = msg.data
 				$scope.$digest()
 			}else{
